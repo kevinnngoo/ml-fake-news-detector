@@ -105,10 +105,10 @@ jupyter lab
 
 - **Accuracy achieved:** 92.82%
 - **Confusion Matrix:**
-  - 589 true positives
-  - 587 true negatives
-  - 42 false positives
-  - 49 false negatives
+  - 588 true positives
+  - 586 true negatives
+  - 43 false positives
+  - 50 false negatives
 
 ---
 
