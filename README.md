@@ -1,6 +1,6 @@
 # 📰 Fake News Detection with Python and Machine Learning
 
-This project demonstrates how to build a machine learning pipeline to classify news articles as **REAL** or **FAKE** using Python, pandas, and scikit-learn. The workflow includes data loading, preprocessing, and splitting for model training and evaluation.
+This project demonstrates how to build a machine learning pipeline to classify news articles as **REAL** or **FAKE** using Python, pandas, and scikit-learn. The workflow includes data loading, preprocessing, feature extraction, model training, and evaluation.
 
 ---
 
@@ -35,11 +35,6 @@ To run the code in a notebook environment, install Jupyter Lab:
 
 ```bash
 pip install jupyterlab
-```
-
-Then launch Jupyter Lab:
-
-```bash
 jupyter lab
 ```
 
@@ -47,46 +42,73 @@ jupyter lab
 
 ## 🚀 Steps for Detecting Fake News
 
-### 1. Make Necessary Imports
+1. **Import Libraries**
 
-```python
-import numpy as np
-import pandas as pd
-import itertools
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import PassiveAggressiveClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
-```
+   ```python
+   import numpy as np
+   import pandas as pd
+   from sklearn.model_selection import train_test_split
+   from sklearn.feature_extraction.text import TfidfVectorizer
+   from sklearn.linear_model import PassiveAggressiveClassifier
+   from sklearn.metrics import accuracy_score, confusion_matrix
+   ```
+
+2. **Load the Data**
+
+   ```python
+   df = pd.read_csv('data/raw/news.csv')
+   print(df.shape)
+   df.head()
+   ```
+
+3. **Extract Labels**
+
+   ```python
+   labels = df.label
+   labels.head()
+   ```
+
+4. **Split the Dataset**
+
+   ```python
+   X_train, X_test, y_train, y_test = train_test_split(
+       df['text'], labels, test_size=0.2, random_state=7
+   )
+   ```
+
+5. **TF-IDF Vectorization**
+
+   ```python
+   tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_df=0.7)
+   tfidf_train = tfidf_vectorizer.fit_transform(X_train)
+   tfidf_test = tfidf_vectorizer.transform(X_test)
+   ```
+
+6. **Train the Model**
+
+   ```python
+   pac = PassiveAggressiveClassifier(max_iter=50)
+   pac.fit(tfidf_train, y_train)
+   y_pred = pac.predict(tfidf_test)
+   score = accuracy_score(y_test, y_pred)
+   print(f'Accuracy: {round(score*100,2)}%')
+   ```
+
+7. **Evaluate with Confusion Matrix**
+   ```python
+   print(confusion_matrix(y_test, y_pred, labels=['FAKE', 'REAL']))
+   ```
 
 ---
 
-### 2. Load the Dataset
+## 🏆 Results
 
-```python
-df = pd.read_csv('data/raw/news.csv')
-print(df.shape)
-df.head()
-```
-
----
-
-### 3. Extract the Labels
-
-```python
-labels = df.label
-labels.head()
-```
-
----
-
-### 4. Split the Dataset
-
-```python
-X_train, X_test, y_train, y_test = train_test_split(
-    df['text'], labels, test_size=0.2, random_state=7
-)
-```
+- **Accuracy achieved:** 92.82%
+- **Confusion Matrix:**
+  - 589 true positives
+  - 587 true negatives
+  - 42 false positives
+  - 49 false negatives
 
 ---
 
@@ -107,15 +129,16 @@ ml-fake-news-detector/
 
 ---
 
-## 📈 Next Steps
+## 📝 Summary
 
-- TF-IDF vectorization of text data
-- Train the PassiveAggressiveClassifier
-- Evaluate the model with accuracy and confusion matrix
-- (Optional) Save the trained model and build an inference API
+I built a fake news detector using a political news dataset, TF-IDF vectorization, and a PassiveAggressiveClassifier. The model achieved over 92% accuracy in classifying news as REAL or FAKE.
 
 ---
 
-## 📝 License
+## 📄 License
 
 This project is for educational purposes.
+
+## ▶️ Usage
+
+Open `notebooks/main_experiment.ipynb` in Jupyter Lab and run all cells to reproduce the results.
